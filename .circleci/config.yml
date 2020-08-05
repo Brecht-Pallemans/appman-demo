@@ -6,14 +6,14 @@ version: 2
 
 jobs:
   build&pushImage:
-    working_directory: /go/src/appman-demo
+    working_directory: .
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/openjdk:11
     steps:
       - checkout
       - run:
           name: build the binary
-          command: go build -o appman-demo
+          command: gradlew build
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
@@ -21,29 +21,29 @@ jobs:
           command:  echo 'export TAG=$(cat VERSION)-$CIRCLE_BUILD_NUM' >> $BASH_ENV
       - run:
           name: Build the docker image
-          command: docker build . -t ${CIRCLE_PROJECT_REPONAME}:$TAG
+          command: docker build . -t ${CIRCLE_PROJECT_REPONAME}:$TAG --build-arg JAR_FILE=build/libs/*.jar
       - run:
           name: Install AWS cli
-          command: export TZ=Europe/Minsk && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
+          command: export TZ=Asia/Bangkok && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
       - run:
           name: Login to ECR
           command: $(aws ecr get-login --region $AWS_REGION | sed -e 's/-e none//g')
       - run:
           name: Tag the image with ECR repo name
-          command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${HELLOAPP_ECR_REPO}:$TAG
+          command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${APPMAN_DEMO_ECR_REPO}:$TAG
       - run:
           name: Push the image the ECR repo
-          command: docker push ${HELLOAPP_ECR_REPO}:$TAG
+          command: docker push ${APPMAN_DEMO_ECR_REPO}:$TAG
   deploy:
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/openjdk:11
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
       - run:
           name: Install AWS cli
-          command: export TZ=Europe/Minsk && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
+          command: export TZ=Asia/Bangkok && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
       - run:
           name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
           command:  echo 'export TAG=$(cat VERSION)-$CIRCLE_PREVIOUS_BUILD_NUM' >> $BASH_ENV
