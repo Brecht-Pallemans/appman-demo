@@ -6,9 +6,9 @@ helm tiller start-ci
 export HELM_HOST=127.0.0.1:44134
 result=$(eval helm ls | grep appman-demo)
 if [ $? -ne "0" ]; then
-   helm install --timeout 180 --name appman-demo --set image.tag=$TAG charts/appman-demo
+   helm install --timeout 180s --name appman-demo --set image.tag=$TAG charts/appman-demo
 else
-   helm upgrade --timeout 180 appman-demo --set image.tag=$TAG charts/appman-demo
+   helm upgrade --timeout 180s appman-demo --set image.tag=$TAG charts/appman-demo
 fi
 echo "stop tiller"
 helm tiller stop
