@@ -12,8 +12,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: make gradle commands available
+          command: chmod +x gradlew
+      - run:
           name: build the binary
-          command: sudo ./gradlew build
+          command: ./gradlew build
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
