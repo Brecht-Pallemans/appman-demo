@@ -31,7 +31,7 @@ build&pushImage:
         command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${APPMAN_DEMO_ECR_REPO}:$TAG
     - run:
         name: Push the image the ECR repo
-          command: docker push ${APPMAN_DEMO_ECR_REPO}:$TAG
+        command: docker push ${APPMAN_DEMO_ECR_REPO}:$TAG
 deploy:
   docker:
     - image: circleci/golang:1.10
