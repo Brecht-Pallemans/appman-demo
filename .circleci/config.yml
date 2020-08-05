@@ -33,13 +33,13 @@ jobs:
           command: export TZ=Asia/Bangkok && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
       - run:
           name: Login to ECR
-          command: eval $(aws ecr get-login --region $AWS_REGION)
+          command: $(aws ecr get-login --region $AWS_REGION | sed -e 's/-e none//g')
       - run:
           name: Tag the image with ECR repo name
           command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${APPMAN_DEMO_ECR_REPO}:$TAG
       - run:
           name: Push the image the ECR repo
-          command: docker push ${APPMAN_DEMO_ECR_REPO}:$TAG
+          command: docker push ${CIRCLE_PROJECT_REPONAME}:$TAG
   deploy:
     docker:
       - image: circleci/openjdk:11
