@@ -13,7 +13,7 @@ jobs:
       - checkout
       - run:
           name: build the binary
-          command: gradlew build
+          command: ./gradlew build
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
