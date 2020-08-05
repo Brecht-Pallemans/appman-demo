@@ -22,7 +22,7 @@ jobs:
       - run:
           name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
           command:  echo 'export TAG=$(cat build.gradle | grep -o 'version = [^,]*')-$CIRCLE_BUILD_NUM' >> $BASH_ENV
-      -run:
+      - run:
           name: echo tag
           command: echo $TAG
       - run:
