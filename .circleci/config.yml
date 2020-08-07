@@ -12,7 +12,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 19.03.12
+          version: 18.06.0-ce
       - run:
           name: make gradle commands available
           command: chmod +x gradlew

@@ -19,7 +19,7 @@ spec:
         app: appman-demo
     spec:
       containers:
-        - image: brechtpallemans/appman-demo
+        - image: brechtpallemans/appman-demo:0.0.2-28
           name: appman-demo
           ports:
             - containerPort: 80
