@@ -7,8 +7,8 @@ version: 2
 jobs:
   build&pushImage:
     working_directory: ~/appman-demo
-    machine:
-      image: ubuntu-1604:201903-01
+    docker:
+      - image: circleci/openjdk:11
     steps:
       - checkout
       - run:
@@ -17,6 +17,9 @@ jobs:
       - run:
           name: build the binary
           command: ./gradlew build
+      - setup_remote_docker:
+          docker_layer_caching: false
+          version: 18.06.0-ce
       - run:
           name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
           command:  echo 'export TAG=0.0.2-$CIRCLE_BUILD_NUM' >> $BASH_ENV
@@ -31,10 +34,10 @@ jobs:
           command: docker login -u ${DOCKER_HUB_UNAME} -p ${DOCKER_HUB_PW}
       - run:
           name: Tag the image with docker hub repo name
-          command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${DOCKER_HUB}:$TAG
+          command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${DOCKER_HUB_UNAME}/${CIRCLE_PROJECT_REPONAME}:$TAG
       - run:
           name: Push the image the docker hub
-          command: docker push ${DOCKER_HUB}:$TAG
+          command: docker push ${DOCKER_HUB_UNAME}/${CIRCLE_PROJECT_REPONAME}:$TAG
 
 workflows:
   version: 2
