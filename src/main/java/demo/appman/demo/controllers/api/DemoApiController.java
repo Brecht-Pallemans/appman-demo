@@ -16,7 +16,7 @@ public class DemoApiController {
     public ResponseEntity<String> getHello() {
         return ResponseEntity.ok("Hello world");
     }
-    
+
     @GetMapping("/bye")
     public ResponseEntity<String> getBye() {
         return ResponseEntity.ok("Goodbye");

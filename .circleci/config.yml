@@ -11,6 +11,8 @@ jobs:
       - image: circleci/openjdk:11
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.12
       - run:
           name: make gradle commands available
           command: chmod +x gradlew
@@ -32,10 +34,10 @@ jobs:
           name: Login to DockerHub
           command: docker login -u ${DOCKER_HUB_UNAME} -p ${DOCKER_HUB_PW}
       - run:
-          name: Tag the image with ECR repo name
+          name: Tag the image with docker hub repo name
           command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${DOCKER_HUB}:$TAG
       - run:
-          name: Push the image the ECR repo
+          name: Push the image the docker hub
           command: docker push ${DOCKER_HUB}:$TAG
 
 workflows:
@@ -43,6 +45,3 @@ workflows:
   primary:
     jobs:
       - build&pushImage
-      - deploy:
-          requires:
-            - build&pushImage
