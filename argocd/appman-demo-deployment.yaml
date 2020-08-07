@@ -20,6 +20,7 @@ spec:
     spec:
       containers:
         - image: brechtpallemans/appman-demo:0.0.2-28
+          imagePullPolicy: Always
           name: appman-demo
           ports:
             - containerPort: 80

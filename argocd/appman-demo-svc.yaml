@@ -3,8 +3,10 @@ kind: Service
 metadata:
   name: appman-demo
 spec:
+  type: LoadBalancer
   ports:
   - port: 80
+    protocol: TCP
     targetPort: 80
   selector:
     app: appman-demo

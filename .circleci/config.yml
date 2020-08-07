@@ -11,8 +11,7 @@ jobs:
       - image: circleci/openjdk:11
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 18.06.0-ce
+      - setup_remote_docker
       - run:
           name: make gradle commands available
           command: chmod +x gradlew
