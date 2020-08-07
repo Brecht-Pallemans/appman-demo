@@ -12,8 +12,13 @@ public class DemoApiController {
     public DemoApiController() {
     }
 
-    @GetMapping("/")
-    public ResponseEntity<String> getDemo() {
+    @GetMapping("/hello")
+    public ResponseEntity<String> getHello() {
         return ResponseEntity.ok("Hello world");
+    }
+    
+    @GetMapping("/bye")
+    public ResponseEntity<String> getBye() {
+        return ResponseEntity.ok("Goodbye");
     }
 }
