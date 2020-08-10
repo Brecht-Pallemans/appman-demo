@@ -4,8 +4,15 @@
 
 version: 2
 
+general:
+  tag:
+    only:
+      - master
+      - dev
+
 jobs:
   build&pushImage:
+    tag: /v[0-9]+(\.[0-9]+)*(-.*)*/
     working_directory: ~/appman-demo
     docker:
       - image: circleci/openjdk:11
@@ -21,12 +28,6 @@ jobs:
           docker_layer_caching: false
           version: 18.06.0-ce
       - run:
-          name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
-          command:  echo 'export TAG=0.0.2-$CIRCLE_BUILD_NUM' >> $BASH_ENV
-      - run:
-          name: echo tag
-          command: echo $TAG
-      - run:
           name: Build the docker image
           command: docker build . -t ${CIRCLE_PROJECT_REPONAME}:$TAG --build-arg JAR_FILE=build/libs/*.jar
       - run:
@@ -34,10 +35,10 @@ jobs:
           command: docker login -u ${DOCKER_HUB_UNAME} -p ${DOCKER_HUB_PW}
       - run:
           name: Tag the image with docker hub repo name
-          command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${DOCKER_HUB_UNAME}/${CIRCLE_PROJECT_REPONAME}:$TAG
+          command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${DOCKER_HUB_UNAME}/${CIRCLE_PROJECT_REPONAME}-$CIRCLE_BRANCH:$CIRCLE_TAG
       - run:
           name: Push the image the docker hub
-          command: docker push ${DOCKER_HUB_UNAME}/${CIRCLE_PROJECT_REPONAME}:$TAG
+          command: docker push ${DOCKER_HUB_UNAME}/${CIRCLE_PROJECT_REPONAME}-$CIRCLE_BRANCH:$CIRCLE_TAG
 
 workflows:
   version: 2
